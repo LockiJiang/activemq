@@ -141,8 +141,8 @@ class Init():
         if loglevel is None or loglevel == "":
             raise KeyError("You must set loglevel")
 
-        self.replace_all(ACTIVEMQ_CONF + "/log4j.properties", "log4j\.rootLogger=[^,]+", "log4j.rootLogger=" + loglevel)
-        self.replace_all(ACTIVEMQ_CONF + "/log4j.properties", "log4j\.logger\.org\.apache\.activemq\.audit=[^,]+", "log4j.logger.org.apache.activemq.audit=" + loglevel)
+        self.replace_all(ACTIVEMQ_CONF + "/log4j2.properties", "log4j\.rootLogger=[^,]+", "log4j.rootLogger=" + loglevel)
+        self.replace_all(ACTIVEMQ_CONF + "/log4j2.properties", "log4j\.logger\.org\.apache\.activemq\.audit=[^,]+", "log4j.logger.org.apache.activemq.audit=" + loglevel)
 
 
     def do_setting_activemq_main(self, name, messageLimit, storageUsage, tempUsage, maxConnection, frameSize, topics, queues, enabledScheduler, enabledAuth):
@@ -243,8 +243,19 @@ class Init():
         self.replace_all(ACTIVEMQ_HOME + "/bin/linux-x86-64/wrapper.conf" ,"set\.default\.ACTIVEMQ_CONF=%ACTIVEMQ_BASE%/conf$", "set.default.ACTIVEMQ_CONF=%ACTIVEMQ_BASE%/conf.tmp")
 
         # We replace the log output
-        self.replace_all(ACTIVEMQ_CONF + "/log4j.properties", "\$\{activemq\.base\}\/data\/", "/var/log/activemq/")
+        self.replace_all(ACTIVEMQ_CONF + "/log4j2.properties", "\$\{activemq\.base\}\/data\/", "/var/log/activemq/")
         self.replace_all(ACTIVEMQ_HOME + "/bin/linux-x86-64/wrapper.conf" ,"wrapper\.logfile=%ACTIVEMQ_DATA%\/wrapper\.log", "wrapper.logfile=/var/log/activemq/wrapper.log")
+
+
+    def do_setting_activemq_jetty(self, host, port):
+
+        # We change the jetty host
+        if host is not None and host != "":
+            self.replace_all(ACTIVEMQ_CONF + "/jetty.xml", "127.0.0.1", host)
+
+        # We change the jetty port
+        if port is not None and port != "":
+            self.replace_all(ACTIVEMQ_CONF + "/jetty.xml" ,"8161", port)
 
 
     def setting_all(self):
@@ -315,6 +326,10 @@ class Init():
         # We setting wrapper
         self.do_setting_activemq_wrapper(os.getenv('ACTIVEMQ_MIN_MEMORY', '128'),
                                                os.getenv('ACTIVEMQ_MAX_MEMORY', '1024'))
+
+        # We setting the jetty host/port
+        if os.getenv('ACTIVEMQ_JETTY_HOST') is not None or os.getenv('ACTIVEMQ_JETTY_PORT') is not None:
+            self.do_setting_activemq_jetty(os.getenv('ACTIVEMQ_JETTY_HOST'), os.getenv('ACTIVEMQ_JETTY_PORT'))
 
 if __name__ == '__main__':
 
