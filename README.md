@@ -140,7 +140,6 @@ docker run --name='activemq' -d \
 -e 'ACTIVEMQ_STATIC_TOPICS=topic1;topic2;topic3' \
 -e 'ACTIVEMQ_STATIC_QUEUES=queue1;queue2;queue3' \
 -e 'ACTIVEMQ_MIN_MEMORY=1024' -e  'ACTIVEMQ_MAX_MEMORY=4096' \
--e 'ACTIVEMQ_JETTY_HOST=0.0.0.0' -e  'ACTIVEMQ_JETTY_PORT=8161' \
 -e 'ACTIVEMQ_ENABLED_SCHEDULER=true' \
 -v /data/activemq:/data/activemq \
 -v /var/log/activemq:/var/log/activemq \
@@ -216,9 +215,6 @@ Below is the complete list of available options that can be used to customize yo
 
 - **ACTIVEMQ_STATIC_TOPICS**: The list of topics separated by comma witch is created when ActiveMQ start.
 - **ACTIVEMQ_STATIC_QUEUES**: The list of queues separated by comma witch is created when ActiveMQ start.
-
-- **ACTIVEMQ_JETTY_HOST**: The web console bind host. Default to `127.0.0.1`
-- **ACTIVEMQ_JETTY_PORT**: The web console bind port. Default to `8161`
 
 
 ## Advance configuration
